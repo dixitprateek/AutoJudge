@@ -207,21 +207,3 @@ BS-MS (Economics), IIT Roorkee
 Project: *AutoJudge – Predicting Programming Problem Difficulty*
 
 ---
-
-## ✅ Status
-
-✔ Classification model implemented
-✔ Regression model implemented
-✔ Web UI deployed
-✔ Ready for final submission
-
----
-
-If you want, next I can:
-
-* ✍️ tailor this README exactly to your **report.pdf**
-* 📄 help write the **project report (4–8 pages)**
-* 🎥 prepare a **demo video script**
-* ✅ do a **final submission checklist**
-
-Just tell me 👍
