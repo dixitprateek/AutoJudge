@@ -1,11 +1,3 @@
-# AutoJudge
-AutoJudge For Predicting Programming  Problem Difficulty 
-Perfect. Below is a **complete, submission-ready `README.md`** tailored **exactly** to your project, models, metrics, and Streamlit app.
-
-You can **copy–paste this directly** into `README.md` in your repo.
-
----
-
 # 🧠 AutoJudge
 
 ### Predicting Programming Problem Difficulty
