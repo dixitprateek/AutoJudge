@@ -1,30 +1,31 @@
+
 # 🧠 AutoJudge
 
-### Predicting Programming Problem Difficulty
+## Predicting Programming Problem Difficulty
 
-AutoJudge is a machine learning–based system that predicts the **difficulty level** of programming problems.
-Given a problem’s **description, input format, and output format**, the system:
+**AutoJudge** is a machine learning–based system that predicts the **difficulty of programming problems** using only their textual content.
+The system performs **both classification and regression** to provide:
 
-* **Classifies** the problem into **Easy / Medium / Hard**
-* **Predicts a continuous difficulty score** on a scale of **0–10**
-* Provides results through an interactive **Streamlit web interface**
+* A **difficulty class**: *Easy / Medium / Hard*
+* A **numerical difficulty score** on a scale of **0–10**
+
+The project also includes an interactive **Streamlit web application** for real-time predictions.
 
 ---
 
 ## 📌 Project Overview
 
-Judging the difficulty of programming problems is important for competitive programming platforms, educational tools, and adaptive learning systems.
-AutoJudge automates this process using **Natural Language Processing (NLP)** and **Machine Learning** techniques applied to problem statements.
+Assigning difficulty to programming problems is often subjective and inconsistent across platforms. AutoJudge aims to automate this process using **Natural Language Processing (NLP)** and **Machine Learning** techniques applied to problem statements.
 
-The project consists of:
+The system:
 
-* A **classification model** for difficulty labels
-* A **regression model** for difficulty score prediction
-* A **web UI** for real-time inference
+* Uses **textual descriptions only**
+* Does **not rely on metadata** such as submission statistics
+* Is designed to be **platform-agnostic**
 
 ---
 
-## 📊 Dataset Used
+## 📊 Dataset Description
 
 The dataset consists of programming problems with the following textual fields:
 
@@ -32,12 +33,12 @@ The dataset consists of programming problems with the following textual fields:
 * `input_description` – input format
 * `output_description` – output format
 
-Each problem is annotated with:
+Each problem is labeled with:
 
-* A **difficulty class** (`easy`, `medium`, `hard`)
-* A **numeric difficulty score**
+* `problem_class`: **Easy / Medium / Hard**
+* `problem_score`: numerical difficulty score
 
-During preprocessing, all textual fields are **concatenated into a single text representation**.
+During preprocessing, all text fields are **concatenated into a single representation**, which is used consistently during training and inference.
 
 ---
 
@@ -51,55 +52,84 @@ During preprocessing, all textual fields are **concatenated into a single text r
   ```
   description + input_description + output_description
   ```
-* Standard NLP preprocessing via TF-IDF
+* Standard normalization and cleaning
 
 ---
 
 ### 🔹 Feature Extraction
 
 * **TF-IDF Vectorization**
-* **Truncated SVD** (for dimensionality reduction in classification)
+
+  * Unigrams and bigrams
+  * Stop-word removal
+* **Truncated SVD** (for classification models)
 
 ---
 
-### 🔹 Classification Model
+## 🔍 Classification Models (Easy / Medium / Hard)
 
-* **Model:** Logistic Regression (Linear classifier)
-* **Features:** TF-IDF → Truncated SVD
-* **Output:** Easy / Medium / Hard
-* **Reason:** Balanced performance across classes (better Macro F1 than tree-based models)
+Several models were evaluated:
 
----
+### 1️⃣ Logistic Regression (TF-IDF + SVD) — **Final Model**
 
-### 🔹 Regression Model
+* **Accuracy:** 0.464
+* **Macro F1:** **0.448**
 
-* **Model:** Ridge Regression
-* **Features:** TF-IDF
-* **Output:** Difficulty score (0–10)
-* **Reason:** Stable and effective for high-dimensional text features
+Chosen due to:
 
----
-
-## 📈 Evaluation Metrics
-
-### 🔹 Classification
-
-* Accuracy
-* Confusion Matrix
-* **Macro F1 Score** (used due to class imbalance)
-
-### 🔹 Regression
-
-* Mean Absolute Error (MAE)
-* Root Mean Squared Error (RMSE)
-
-> Macro F1 was preferred over accuracy to ensure fair performance across all difficulty classes.
+* Balanced class-wise performance
+* Highest Macro F1 score
+* Better handling of class imbalance
 
 ---
 
-## 🌐 Web Interface (Streamlit)
+### 2️⃣ Random Forest Classifier (TF-IDF + SVD)
 
-The Streamlit application allows users to:
+* **Accuracy:** **0.512**
+* **Macro F1:** 0.362
+
+Despite higher accuracy, this model strongly favored the *Hard* class and performed poorly on *Easy* and *Medium*, making it unsuitable for deployment.
+
+---
+
+### 3️⃣ Sentence Transformer + Linear SVM
+
+* **Accuracy:** 0.498
+* **Macro F1:** **0.469**
+
+Showed strong semantic understanding but struggled to clearly separate *Medium* difficulty problems and was computationally heavier.
+
+---
+
+### ✅ Classification Model Selection
+
+Although Random Forest achieved higher accuracy, **Logistic Regression was selected** because **Macro F1** was prioritized over accuracy due to class imbalance.
+
+---
+
+## 📐 Regression Models (Difficulty Score Prediction)
+
+Regression models were trained using **TF-IDF features** to predict a continuous difficulty score.
+
+| Model                       | MAE      | RMSE     |
+| --------------------------- | -------- | -------- |
+| Ridge Regression            | 1.77     | 2.11     |
+| Random Forest Regressor     | 1.77     | 2.10     |
+| Gradient Boosting Regressor | **1.76** | **2.09** |
+
+### ✅ Regression Model Selection
+
+**Ridge Regression** was chosen for deployment due to:
+
+* Lower computational complexity
+* Stable performance on high-dimensional text data
+* Minimal performance gap compared to ensemble models
+
+---
+
+## 🌐 Web Application (Streamlit)
+
+The Streamlit app allows users to:
 
 1. Enter:
 
@@ -111,13 +141,13 @@ The Streamlit application allows users to:
 
    * Predicted difficulty class
    * Predicted difficulty score
-   * A warning if classification and score indicate borderline difficulty
+   * A warning for borderline cases when predictions disagree
 
-The UI combines all text inputs internally, consistent with the training setup.
+All inputs are internally concatenated to match the training setup.
 
 ---
 
-## ▶️ How to Run the Project Locally
+## ▶️ Running the Project Locally
 
 ### 1️⃣ Clone the Repository
 
@@ -138,64 +168,39 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The app will open in your browser at:
+The app will open at:
 
 ```
 http://localhost:8501
 ```
 
+
+
 ---
 
 ## 🎥 Demo Video
 
-A 2–3 minute demo video explaining:
+A 2–3 minute demo video showcasing:
 
 * Project overview
 * Model approach
 * Working web interface
 
-📎 **Demo Link:**
-(added in `demo/demo_video_link.txt`)
+📎 **Demo link:** *(provided in the repository)*
 
 ---
 
-## 📁 Repository Structure
+## 📝 Notes
 
-```
-autojudge/
-│
-├── app.py
-├── README.md
-├── requirements.txt
-│
-├── models/
-│   ├── vectorizer.pkl
-│   ├── svd.pkl
-│   ├── lr_model.pkl
-│   ├── tfidf_reg.pkl
-│   └── ridge_reg.pkl
-│
-├── report/
-│   └── report.pdf
-│
-└── demo/
-    └── demo_video_link.txt
-```
-
----
-
-## 🧩 Notes on Model Outputs
-
-Classification and regression models are trained independently.
-In some cases, the predicted class and score may differ slightly due to ambiguity in problem difficulty.
-Such cases are highlighted in the UI as **borderline difficulty**, ensuring transparency.
+* Classification and regression models are trained independently.
+* Slight disagreement between predicted class and score is expected for borderline problems.
+* Macro F1 score was prioritized over accuracy due to class imbalance.
 
 ---
 
 ## 👤 Author
 
 **Prateek Dixit**
-BS-MS (Economics), IIT Roorkee
-Project: *AutoJudge – Predicting Programming Problem Difficulty*
+BS–MS (Economics), IIT Roorkee
 
 ---
