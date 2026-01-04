@@ -129,6 +129,8 @@ Regression models were trained using **TF-IDF features** to predict a continuous
 
 ## 🌐 Web Application (Streamlit)
 
+app link https://autojudge.streamlit.app/
+
 The Streamlit app allows users to:
 
 1. Enter:
