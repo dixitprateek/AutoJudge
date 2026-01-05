@@ -188,7 +188,7 @@ A 2–3 minute demo video showcasing:
 * Model approach
 * Working web interface
 
-📎 **Demo link:** *(provided in the repository)*
+📎 **Demo video link:** *(https://drive.google.com/file/d/16ovRaEHQj0npJ9GUP6A1bwWu6zf_Ub30/view?usp=drive_link)*
 
 ---
 
